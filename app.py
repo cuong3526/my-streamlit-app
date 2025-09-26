@@ -74,9 +74,17 @@ for i in range(int(n) if n else 0):
     with col2:
         if rsiv is not None:
             if rsiv >= 50:
-                st.markdown("<div style='background-color:#28a745; border-radius:6px; height:2.4em; margin-top:0.4em;'></div>", unsafe_allow_html=True)
+                st.markdown("""
+                <div style='background-color:#28a745; color:white; border-radius:6px; height:2.4em; margin-top:0.4em; display:flex; align-items:center; justify-content:center; font-weight:bold;'>
+                    Khá hơn Vnindex
+                </div>
+                """, unsafe_allow_html=True)
             else:
-                st.markdown("<div style='background-color:#dc3545; border-radius:6px; height:2.4em; margin-top:0.4em;'></div>", unsafe_allow_html=True)
+                st.markdown("""
+                <div style='background-color:#dc3545; color:white; border-radius:6px; height:2.4em; margin-top:0.4em; display:flex; align-items:center; justify-content:center; font-weight:bold;'>
+                    Yếu hơn Vnindex
+                </div>
+                """, unsafe_allow_html=True)
     invest = st.number_input(f"Số tiền đầu tư cho cổ phiếu {i+1} (triệu):", min_value=0, step=1, value=None, format="%d", placeholder="Nhập số tiền (triệu)", key=f"invest_{i}")
     rsiv_values.append(rsiv)
     investments.append(invest)
@@ -107,12 +115,12 @@ if st.button("Tính toán"):
 
         # Nhận xét cổ phiếu yếu
         if weak_stocks:
-            st.subheader("= NHẬN XÉT VỀ CỔ PHIẾU YẾU =")
+            st.subheader("= CỔ PHIẾU YẾU =")
             st.write("Các cổ phiếu sau đây đang yếu hơn so với Vnindex:")
             for stock in weak_stocks:
                 st.write(f"- {stock}: Nên chuyển sang cổ phiếu khỏe hơn Vnindex, có sức mạnh nội tại HL đảm bảo và có điểm vào theo phương pháp.")
         else:
-            st.subheader("=== NHẬN XÉT VỀ CỔ PHIẾU ===")
+            st.subheader("= NHẬN XÉT VỀ CỔ PHIẾU =")
             st.write("Không có cổ phiếu nào yếu hơn Vnindex (tất cả đều có RSIV >= 50).")
 
         # ...bỏ phần xuất file CSV...
