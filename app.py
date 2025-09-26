@@ -47,30 +47,20 @@ st.markdown("<h1 style='text-align: center;'>📊 CHƯƠNG TRÌNH TÍNH TOÁN RS
 
 # Nhập dữ liệu
 
-safety_level = st.number_input("Nhập mức an toàn của Vnindex (0-9):", min_value=0, max_value=9, step=1)
-n = st.number_input("Nhập số lượng cổ phiếu:", min_value=1, step=1)
-cash_balance = st.number_input("Nhập số tiền mặt hiện có:", min_value=0.0, step=1000.0)
 
-# Tạo dataframe mẫu cho nhập liệu bảng
-df_input = pd.DataFrame({
-    "Cổ phiếu": [f"Cổ phiếu {i+1}" for i in range(int(n))],
-    "RSIV": [0.0 for _ in range(int(n))],
-    "Số tiền đầu tư": [0.0 for _ in range(int(n))]
-})
+safety_level = st.number_input("Nhập mức an toàn của Vnindex (0-9):", min_value=0, max_value=9, step=1, value=None, placeholder="")
+n = st.number_input("Nhập số lượng cổ phiếu:", min_value=1, step=1, value=None, placeholder="")
+cash_balance = st.number_input("Nhập số tiền mặt hiện có:", min_value=0, step=1000, value=None, format="%d", placeholder="")
 
-df_input = st.data_editor(
-    df_input,
-    column_config={
-        "RSIV": st.column_config.NumberColumn("RSIV", min_value=0.0, step=1.0),
-        "Số tiền đầu tư": st.column_config.NumberColumn("Số tiền đầu tư", min_value=0.0, step=1000.0)
-    },
-    disabled=["Cổ phiếu"],
-    hide_index=True,
-    key="data_editor"
-)
 
-rsiv_values = df_input["RSIV"].tolist()
-investments = df_input["Số tiền đầu tư"].tolist()
+# Nhập từng thành phần cho từng cổ phiếu
+rsiv_values = []
+investments = []
+for i in range(int(n) if n else 0):
+    rsiv = st.number_input(f"RSIV của cổ phiếu {i+1}:", min_value=0.0, step=1.0, value=None, placeholder="", key=f"rsiv_{i}")
+    invest = st.number_input(f"Số tiền đầu tư cho cổ phiếu {i+1}:", min_value=0, step=1000, value=None, format="%d", placeholder="", key=f"invest_{i}")
+    rsiv_values.append(rsiv)
+    investments.append(invest)
 
 if st.button("Tính toán"):
     try:
@@ -106,3 +96,4 @@ if st.button("Tính toán"):
 
     except ValueError as e:
         st.error(f"Lỗi: {e}")
+        
