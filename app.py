@@ -43,7 +43,7 @@ def generate_recommendation(total_stock_weight, suggested_ratio, total_portfolio
 
 
 # === Giao diện Streamlit ===
-st.title("📊 CHƯƠNG TRÌNH TÍNH TOÁN RSIV DANH MỤC")
+st.markdown("<h1 style='text-align: center;'>📊 CHƯƠNG TRÌNH TÍNH TOÁN RSIV DANH MỤC</h1>", unsafe_allow_html=True)
 
 # Nhập dữ liệu
 safety_level = st.number_input("Nhập mức an toàn của Vnindex (0-9):", min_value=0, max_value=9, step=1)
@@ -107,3 +107,4 @@ if st.button("Tính toán"):
 
     except ValueError as e:
         st.error(f"Lỗi: {e}")
+
