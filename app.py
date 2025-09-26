@@ -43,22 +43,22 @@ def generate_recommendation(total_stock_weight, suggested_ratio, total_portfolio
 
 
 # === Giao diện Streamlit ===
-st.markdown("<h1 style='text-align: center;'>📊 CHƯƠNG TRÌNH TÍNH TOÁN RSIV DANH MỤC</h1>", unsafe_allow_html=True)
+st.markdown("<h1 style='text-align: center;'>📊 CHƯƠNG TRÌNH KIỂM TRA SỨC KHỎE DANH MỤC</h1>", unsafe_allow_html=True)
 
 # Nhập dữ liệu
 
 
 safety_level = st.number_input("Nhập mức an toàn của Vnindex (0-9):", min_value=0, max_value=9, step=1, value=None, placeholder="")
-n = st.number_input("Nhập số lượng cổ phiếu:", min_value=1, step=1, value=None, placeholder="")
-cash_balance = st.number_input("Nhập số tiền mặt hiện có:", min_value=0, step=1000, value=None, format="%d", placeholder="")
+n = st.number_input("Số lượng cổ phiếu trong danh mục của bạn:", min_value=1, step=1, value=None, placeholder="")
+cash_balance = st.number_input("Nhập số tiền mặt hiện có (triệu):", min_value=0, step=1, value=None, format="%d", placeholder="Nhập số tiền mặt (triệu)")
 
 
 # Nhập từng thành phần cho từng cổ phiếu
 rsiv_values = []
 investments = []
 for i in range(int(n) if n else 0):
-    rsiv = st.number_input(f"RSIV của cổ phiếu {i+1}:", min_value=0.0, step=1.0, value=None, placeholder="", key=f"rsiv_{i}")
-    invest = st.number_input(f"Số tiền đầu tư cho cổ phiếu {i+1}:", min_value=0, step=1000, value=None, format="%d", placeholder="", key=f"invest_{i}")
+    rsiv = st.number_input(f"RSIV của cổ phiếu {i+1}:", min_value=0, step=1, value=None, format="%d", placeholder="Nhập RSIV", key=f"rsiv_{i}")
+    invest = st.number_input(f"Số tiền đầu tư cho cổ phiếu {i+1} (triệu):", min_value=0, step=1, value=None, format="%d", placeholder="Nhập số tiền (triệu)", key=f"invest_{i}")
     rsiv_values.append(rsiv)
     investments.append(invest)
 
@@ -83,7 +83,7 @@ if st.button("Tính toán"):
 
         # Nhận xét cổ phiếu yếu
         if weak_stocks:
-            st.subheader("=== NHẬN XÉT VỀ CỔ PHIẾU YẾU ===")
+            st.subheader("= NHẬN XÉT VỀ CỔ PHIẾU YẾU =")
             st.write("Các cổ phiếu sau đây đang yếu hơn so với Vnindex:")
             for stock in weak_stocks:
                 st.write(f"- {stock}: Nên chuyển sang cổ phiếu khỏe hơn Vnindex, có sức mạnh nội tại HL đảm bảo và có điểm vào theo phương pháp.")
