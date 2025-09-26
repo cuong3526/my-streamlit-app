@@ -98,7 +98,7 @@ if st.button("Tính toán"):
         weak_stocks = analyze_weak_stocks(rsiv_values)
 
         # Hiển thị kết quả chi tiết
-        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        now = (datetime.now() + pd.Timedelta(hours=7)).strftime("%Y-%m-%d %H:%M:%S")
         st.subheader("=== KẾT QUẢ ===")
         st.write(f"📅 Thời gian tính toán: {now}")
         st.write(f"Giá trị trung bình RSIV của danh mục: {weighted_sum:.2f}")
