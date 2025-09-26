@@ -51,7 +51,15 @@ st.markdown("""
 # Nhập dữ liệu
 
 
-safety_level = st.number_input("Nhập mức an toàn của Vnindex (0-9):", min_value=0, max_value=9, step=1, value=None, placeholder="")
+n_safety_col1, n_safety_col2 = st.columns([2, 5])
+with n_safety_col1:
+    safety_level = st.number_input("Nhập mức an toàn của Vnindex (0-9):", min_value=0, max_value=9, step=1, value=None, placeholder="", key="safety_level")
+with n_safety_col2:
+    if safety_level is not None:
+        if safety_level >= 5:
+            st.markdown(f"<div style='background-color:#d4edda; color:#155724; border-radius:6px; padding:0.5em 1em; display:inline-block;'>Mức an toàn: <b>{safety_level}</b> (An toàn)</div>", unsafe_allow_html=True)
+        else:
+            st.markdown(f"<div style='background-color:#f8d7da; color:#721c24; border-radius:6px; padding:0.5em 1em; display:inline-block;'>Mức an toàn: <b>{safety_level}</b> (Cảnh báo thấp)</div>", unsafe_allow_html=True)
 n = st.number_input("Số lượng cổ phiếu trong danh mục của bạn:", min_value=1, step=1, value=None, placeholder="")
 cash_balance = st.number_input("Nhập số tiền mặt hiện có (triệu):", min_value=0, step=1, value=None, format="%d", placeholder="Nhập số tiền mặt (triệu)")
 
@@ -60,7 +68,15 @@ cash_balance = st.number_input("Nhập số tiền mặt hiện có (triệu):",
 rsiv_values = []
 investments = []
 for i in range(int(n) if n else 0):
-    rsiv = st.number_input(f"RSIV của cổ phiếu {i+1}:", min_value=0, step=1, value=None, format="%d", placeholder="Nhập RSIV", key=f"rsiv_{i}")
+    col1, col2 = st.columns([2,1])
+    with col1:
+        rsiv = st.number_input(f"RSIV của cổ phiếu {i+1}:", min_value=0, step=1, value=None, format="%d", placeholder="Nhập RSIV", key=f"rsiv_{i}")
+    with col2:
+        if rsiv is not None:
+            if rsiv >= 50:
+                st.markdown("<div style='background-color:#28a745; border-radius:6px; height:2.4em; margin-top:0.4em;'></div>", unsafe_allow_html=True)
+            else:
+                st.markdown("<div style='background-color:#dc3545; border-radius:6px; height:2.4em; margin-top:0.4em;'></div>", unsafe_allow_html=True)
     invest = st.number_input(f"Số tiền đầu tư cho cổ phiếu {i+1} (triệu):", min_value=0, step=1, value=None, format="%d", placeholder="Nhập số tiền (triệu)", key=f"invest_{i}")
     rsiv_values.append(rsiv)
     investments.append(invest)
@@ -78,6 +94,11 @@ if st.button("Tính toán"):
         st.subheader("=== KẾT QUẢ ===")
         st.write(f"📅 Thời gian tính toán: {now}")
         st.write(f"Giá trị trung bình RSIV của danh mục: {weighted_sum:.2f}")
+        # Nhận xét về RSIV danh mục so với thị trường chung
+        if weighted_sum > 50:
+            st.success("Nhận xét: Danh mục này đang khá hơn thị trường chung (RSIV > 50).")
+        else:
+            st.warning("Nhận xét: Danh mục này đang yếu hơn thị trường chung (RSIV ≤ 50).")
         st.write(f"Tỷ trọng gợi ý nắm giữ: {suggested_ratio:.2f}%")
         st.write(f"Tổng giá trị danh mục hiện tại: {total_portfolio_value:.2f}")
         st.write(f"Tỷ trọng thực tế của cổ phiếu: {total_stock_weight:.2f}%")
@@ -93,7 +114,6 @@ if st.button("Tính toán"):
         else:
             st.subheader("=== NHẬN XÉT VỀ CỔ PHIẾU ===")
             st.write("Không có cổ phiếu nào yếu hơn Vnindex (tất cả đều có RSIV >= 50).")
-
 
         # ...bỏ phần xuất file CSV...
 
