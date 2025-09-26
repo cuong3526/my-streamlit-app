@@ -46,18 +46,31 @@ def generate_recommendation(total_stock_weight, suggested_ratio, total_portfolio
 st.markdown("<h1 style='text-align: center;'>📊 CHƯƠNG TRÌNH TÍNH TOÁN RSIV DANH MỤC</h1>", unsafe_allow_html=True)
 
 # Nhập dữ liệu
+
 safety_level = st.number_input("Nhập mức an toàn của Vnindex (0-9):", min_value=0, max_value=9, step=1)
 n = st.number_input("Nhập số lượng cổ phiếu:", min_value=1, step=1)
 cash_balance = st.number_input("Nhập số tiền mặt hiện có:", min_value=0.0, step=1000.0)
 
-rsiv_values = []
-investments = []
+# Tạo dataframe mẫu cho nhập liệu bảng
+df_input = pd.DataFrame({
+    "Cổ phiếu": [f"Cổ phiếu {i+1}" for i in range(int(n))],
+    "RSIV": [0.0 for _ in range(int(n))],
+    "Số tiền đầu tư": [0.0 for _ in range(int(n))]
+})
 
-for i in range(int(n)):
-    rsiv = st.number_input(f"RSIV của cổ phiếu {i+1}:", min_value=0.0, step=1.0)
-    invest = st.number_input(f"Số tiền đầu tư cho cổ phiếu {i+1}:", min_value=0.0, step=1000.0)
-    rsiv_values.append(rsiv)
-    investments.append(invest)
+df_input = st.data_editor(
+    df_input,
+    column_config={
+        "RSIV": st.column_config.NumberColumn("RSIV", min_value=0.0, step=1.0),
+        "Số tiền đầu tư": st.column_config.NumberColumn("Số tiền đầu tư", min_value=0.0, step=1000.0)
+    },
+    disabled=["Cổ phiếu"],
+    hide_index=True,
+    key="data_editor"
+)
+
+rsiv_values = df_input["RSIV"].tolist()
+investments = df_input["Số tiền đầu tư"].tolist()
 
 if st.button("Tính toán"):
     try:
@@ -88,23 +101,8 @@ if st.button("Tính toán"):
             st.subheader("=== NHẬN XÉT VỀ CỔ PHIẾU ===")
             st.write("Không có cổ phiếu nào yếu hơn Vnindex (tất cả đều có RSIV >= 50).")
 
-        # Xuất file CSV đúng tiếng Việt
-        data = {
-            "Cổ phiếu": [f"Cổ phiếu {i+1}" for i in range(int(n))],
-            "RSIV": rsiv_values,
-            "Số tiền đầu tư": investments
-        }
-        df = pd.DataFrame(data)
-        df.loc[len(df.index)] = ["Tổng số tiền đầu tư vào cổ phiếu", "", sum(investments)]
-        df.loc[len(df.index)] = ["Tiền mặt", "", cash_balance]
-        df.loc[len(df.index)] = ["Tỷ trọng thực tế cổ phiếu (%)", "", total_stock_weight]
-        df.loc[len(df.index)] = ["Tỷ trọng tiền mặt (%)", "", cash_weight]
-        df.loc[len(df.index)] = ["Tỷ trọng gợi ý nắm giữ (%)", "", suggested_ratio]
-        df.loc[len(df.index)] = ["Hành động", action, amount]
 
-        csv = df.to_csv(index=False, encoding="utf-8-sig")
-        st.download_button("📥 Tải xuống kết quả CSV", data=csv, file_name="ket_qua_rsiv.csv", mime="text/csv")
+        # ...bỏ phần xuất file CSV...
 
     except ValueError as e:
         st.error(f"Lỗi: {e}")
-
