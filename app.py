@@ -44,7 +44,7 @@ def generate_recommendation(total_stock_weight, suggested_ratio, total_portfolio
 
 # === Giao diện Streamlit ===
 st.markdown("""
-<h2 style='text-align: center; color: #800080;'>KIỂM TRA SỨC KHỎE DANH MỤC</h2>
+<h2 style='text-align: center; color: #800080;'>KHÁM SỨC KHỎE DANH MỤC</h2>
 """, unsafe_allow_html=True)
 
 # Nhập dữ liệu
@@ -99,4 +99,5 @@ if st.button("Tính toán"):
     except ValueError as e:
         st.error(f"Lỗi: {e}")
         
+
 
