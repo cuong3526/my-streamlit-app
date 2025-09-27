@@ -155,16 +155,11 @@ if st.button("Tính toán"):
             pdf.cell(0, 10, "Không có cổ phiếu nào yếu hơn Vnindex (tất cả đều có RSIV >= 50)", ln=True)
         pdf.set_text_color(0,0,0)
 
-        # Lưu PDF ra file tạm và tạo nút tải về
+        # Lưu PDF ra file tạm
         with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
             pdf.output(tmp_pdf.name)
             tmp_pdf.seek(0)
-            st.download_button(
-                label="📄 Tải xuống kết quả PDF",
-                data=tmp_pdf.read(),
-                file_name="ket_qua_danh_muc.pdf",
-                mime="application/pdf"
-            )
+            pdf_data = tmp_pdf.read()
 
         # Nhận xét cổ phiếu yếu
         if weak_stocks:
@@ -175,6 +170,35 @@ if st.button("Tính toán"):
         else:
             st.subheader("= NHẬN XÉT VỀ CỔ PHIẾU =")
             st.write("Không có cổ phiếu nào yếu hơn Vnindex (tất cả đều có RSIV >= 50).")
+
+        # Nút tải PDF đặt dưới cùng
+        st.markdown("""
+<style>
+#custom-download-btn button {
+    background: #1976d2;
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    border-radius: 8px;
+    border: none;
+    padding: 0.7em 2em;
+    box-shadow: 0 2px 8px rgba(25,118,210,0.18);
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 1.5em;
+}
+#custom-download-btn button:hover {
+    background: #0d47a1;
+    transform: scale(1.05);
+}
+</style>
+        """, unsafe_allow_html=True)
+        st.download_button(
+            label="📄 Tải xuống kết quả PDF",
+            data=pdf_data,
+            file_name="ket_qua_danh_muc.pdf",
+            mime="application/pdf",
+            key="custom-download-btn"
+        )
 
         # ...bỏ phần xuất file CSV...
 
