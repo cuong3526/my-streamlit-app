@@ -160,6 +160,9 @@ if st.button("Tính toán"):
             pdf.output(tmp_pdf.name)
             tmp_pdf.seek(0)
             pdf_data = tmp_pdf.read()
+        # Tạo tên file có ngày
+        pdf_date = now.split()[0]  # yyyy-mm-dd
+        pdf_filename = f"ket_qua_danh_muc_{pdf_date}.pdf"
 
         # Nhận xét cổ phiếu yếu
         if weak_stocks:
@@ -195,7 +198,7 @@ if st.button("Tính toán"):
         st.download_button(
             label="📄 Tải xuống kết quả PDF",
             data=pdf_data,
-            file_name="ket_qua_danh_muc.pdf",
+            file_name=pdf_filename,
             mime="application/pdf",
             key="custom-download-btn"
         )
