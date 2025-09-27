@@ -89,6 +89,11 @@ for i in range(int(n) if n else 0):
     rsiv_values.append(rsiv)
     investments.append(invest)
 
+# Hiển thị tổng giá trị danh mục sau khi nhập xong cổ phiếu cuối cùng
+if n and len(investments) == int(n) and all(v is not None for v in investments) and cash_balance is not None:
+    total_portfolio_value = sum(investments) + cash_balance
+    st.info(f"Tổng giá trị danh mục hiện tại: {total_portfolio_value:.2f} triệu")
+
 if st.button("Tính toán"):
     from fpdf import FPDF
     import tempfile
@@ -111,7 +116,7 @@ if st.button("Tính toán"):
         else:
             st.warning("Nhận xét: Danh mục này đang yếu hơn thị trường chung (RSIV ≤ 50).")
         st.write(f"Tỷ trọng gợi ý nắm giữ: {suggested_ratio:.2f}%")
-        st.write(f"Tổng giá trị danh mục hiện tại: {total_portfolio_value:.2f}")
+    # Không hiển thị tổng giá trị danh mục ở phần kết quả
         st.write(f"Tỷ trọng thực tế của cổ phiếu: {total_stock_weight:.2f}%")
         st.write(f"Tỷ trọng tiền mặt: {cash_weight:.2f}%")
         st.write(f"Gợi ý điều chỉnh: **{action}** tỷ trọng cổ phiếu với số tiền = {amount:.2f}")
@@ -138,7 +143,7 @@ if st.button("Tính toán"):
             pdf.cell(0, 10, "Nhận xét: Danh mục này đang yếu hơn thị trường chung (RSIV ≤ 50)", ln=True)
         pdf.set_text_color(0,0,0)
         pdf.cell(0, 10, f"Tỷ trọng gợi ý nắm giữ: {suggested_ratio:.2f}%", ln=True)
-        pdf.cell(0, 10, f"Tổng giá trị danh mục hiện tại: {total_portfolio_value:.2f}", ln=True)
+    # Không ghi tổng giá trị danh mục vào PDF
         pdf.cell(0, 10, f"Tỷ trọng thực tế của cổ phiếu: {total_stock_weight:.2f}%", ln=True)
         pdf.cell(0, 10, f"Tỷ trọng tiền mặt: {cash_weight:.2f}%", ln=True)
         pdf.cell(0, 10, f"Gợi ý điều chỉnh: {action} tỷ trọng cổ phiếu với số tiền = {amount:.2f}", ln=True)
