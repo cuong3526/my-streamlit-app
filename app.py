@@ -149,7 +149,7 @@ if st.button("Tính toán"):
             pdf.cell(0, 10, "CỔ PHIẾU YẾU:", ln=True)
             pdf.set_text_color(0,0,0)
             for stock in weak_stocks:
-                pdf.cell(0, 10, f"- {stock}", ln=True)
+                pdf.multi_cell(0, 10, f"- {stock}: Nên chuyển sang cổ phiếu khỏe hơn Vnindex, có sức mạnh nội tại HL đảm bảo và có điểm vào theo phương pháp.")
         else:
             pdf.set_text_color(40,167,69)
             pdf.cell(0, 10, "Không có cổ phiếu nào yếu hơn Vnindex (tất cả đều có RSIV >= 50)", ln=True)
