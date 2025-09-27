@@ -90,6 +90,9 @@ for i in range(int(n) if n else 0):
     investments.append(invest)
 
 if st.button("Tính toán"):
+    from fpdf import FPDF
+    import tempfile
+
     try:
         weighted_sum, _ = calculate_weighted_average(rsiv_values, investments)
         suggested_ratio = suggest_holding_ratio(safety_level, weighted_sum)
@@ -113,6 +116,56 @@ if st.button("Tính toán"):
         st.write(f"Tỷ trọng tiền mặt: {cash_weight:.2f}%")
         st.write(f"Gợi ý điều chỉnh: **{action}** tỷ trọng cổ phiếu với số tiền = {amount:.2f}")
 
+        # Tạo file PDF kết quả
+
+
+        pdf = FPDF()
+        pdf.add_page()
+        # Sử dụng font Unicode NotoSans-Regular.ttf trong thư mục dự án
+        pdf.add_font('NotoSans', '', 'NotoSans-Regular.ttf', uni=True)
+        pdf.set_font('NotoSans', '', 14)
+        pdf.set_text_color(162, 89, 255)
+        pdf.cell(0, 10, "KHÁM SỨC KHỎE DANH MỤC CỔ PHIẾU", ln=True, align="C")
+        pdf.set_text_color(0,0,0)
+        pdf.set_font('NotoSans', '', 12)
+        pdf.cell(0, 10, f"Thời gian tính toán: {now}", ln=True)
+        pdf.cell(0, 10, f"Giá trị trung bình RSIV của danh mục: {weighted_sum:.2f}", ln=True)
+        if weighted_sum > 50:
+            pdf.set_text_color(40,167,69)
+            pdf.cell(0, 10, "Nhận xét: Danh mục này đang khá hơn thị trường chung (RSIV > 50)", ln=True)
+        else:
+            pdf.set_text_color(220,53,69)
+            pdf.cell(0, 10, "Nhận xét: Danh mục này đang yếu hơn thị trường chung (RSIV ≤ 50)", ln=True)
+        pdf.set_text_color(0,0,0)
+        pdf.cell(0, 10, f"Tỷ trọng gợi ý nắm giữ: {suggested_ratio:.2f}%", ln=True)
+        pdf.cell(0, 10, f"Tổng giá trị danh mục hiện tại: {total_portfolio_value:.2f}", ln=True)
+        pdf.cell(0, 10, f"Tỷ trọng thực tế của cổ phiếu: {total_stock_weight:.2f}%", ln=True)
+        pdf.cell(0, 10, f"Tỷ trọng tiền mặt: {cash_weight:.2f}%", ln=True)
+        pdf.cell(0, 10, f"Gợi ý điều chỉnh: {action} tỷ trọng cổ phiếu với số tiền = {amount:.2f}", ln=True)
+
+        # Nhận xét cổ phiếu yếu
+        if weak_stocks:
+            pdf.set_text_color(220,53,69)
+            pdf.cell(0, 10, "CỔ PHIẾU YẾU:", ln=True)
+            pdf.set_text_color(0,0,0)
+            for stock in weak_stocks:
+                pdf.cell(0, 10, f"- {stock}", ln=True)
+        else:
+            pdf.set_text_color(40,167,69)
+            pdf.cell(0, 10, "Không có cổ phiếu nào yếu hơn Vnindex (tất cả đều có RSIV >= 50)", ln=True)
+        pdf.set_text_color(0,0,0)
+
+        # Lưu PDF ra file tạm và tạo nút tải về
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_pdf:
+            pdf.output(tmp_pdf.name)
+            tmp_pdf.seek(0)
+            st.download_button(
+                label="📄 Tải xuống kết quả PDF",
+                data=tmp_pdf.read(),
+                file_name="ket_qua_danh_muc.pdf",
+                mime="application/pdf"
+            )
+
         # Nhận xét cổ phiếu yếu
         if weak_stocks:
             st.subheader("= CỔ PHIẾU YẾU =")
@@ -127,5 +180,3 @@ if st.button("Tính toán"):
 
     except ValueError as e:
         st.error(f"Lỗi: {e}")
-        
-
